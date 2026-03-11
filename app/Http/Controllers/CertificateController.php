@@ -7,6 +7,7 @@ use App\Models\Certificate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use ArPHP\I18N\Arabic; // أضف هذا السطر في الأعلى
 
 class CertificateController extends Controller
 {
@@ -54,22 +55,57 @@ class CertificateController extends Controller
     /**
      * Generate and stream the PDF
      */
-    private function generatePdf(Certificate $certificate): \Illuminate\Http\Response
-    {
-        $certificate->load('sale', 'issuedBy');
 
-        $pdf = Pdf::loadView('certificates.pdf', compact('certificate'))
-            ->setPaper('a4', 'portrait')
-            ->setOptions([
-                'defaultFont' => 'DejaVu Sans',
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled'      => false,
-            ]);
+// امسح سطر use ArPHP\I18N\Arabic; 
 
-        $filename = 'ifada-' . $certificate->certificate_number . '.pdf';
+private function generatePdf(Certificate $certificate): \Illuminate\Http\Response
+{
+    $certificate->load('sale', 'issuedBy');
 
-        return $pdf->stream($filename);
+    // معالجة النصوص العربية
+    if (class_exists(\ArPHP\I18N\Arabic::class)) {
+
+        $arabic = new \ArPHP\I18N\Arabic();
+
+        // معالجة النص الأساسي
+        if (!empty($certificate->certificate_text)) {
+            $certificate->certificate_text = $arabic->utf8Glyphs($certificate->certificate_text);
+        }
+
+        // معالجة بيانات البيع
+        if ($certificate->sale) {
+
+            if (!empty($certificate->sale->buyer_name)) {
+                $certificate->sale->buyer_name = $arabic->utf8Glyphs($certificate->sale->buyer_name);
+            }
+
+            if (!empty($certificate->sale->village)) {
+                $certificate->sale->village = $arabic->utf8Glyphs($certificate->sale->village);
+            }
+
+            if (!empty($certificate->sale->markaz)) {
+                $certificate->sale->markaz = $arabic->utf8Glyphs($certificate->sale->markaz);
+            }
+        }
     }
+
+    // إنشاء الـ PDF
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('certificates.pdf', [
+        'certificate' => $certificate
+    ]);
+
+    $pdf->setPaper('A4', 'portrait');
+
+    $pdf->setOptions([
+        'defaultFont' => 'DejaVu Sans',
+        'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true
+    ]);
+
+    return $pdf->stream('ifada-' . $certificate->certificate_number . '.pdf');
+}
+
+
 
     /**
      * Daily stats for dashboard

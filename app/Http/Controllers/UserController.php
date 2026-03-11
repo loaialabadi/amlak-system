@@ -6,15 +6,22 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controllers\HasMiddleware; // موجودة عندك
+use Illuminate\Routing\Controllers\Middleware;    // موجودة عندك
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware // 1. أضفنا implements هنا
 {
-    public function __construct()
+    // 2. حذفنا __construct واستخدمنا الدالة الجديدة middleware
+    public static function middleware(): array
     {
-        $this->middleware(function ($request, $next) {
-            if (!auth()->user()->isAdmin()) abort(403);
-            return $next($request);
-        });
+        return [
+            new Middleware(function ($request, $next) {
+                if (!auth()->check() || !auth()->user()->isAdmin()) {
+                    abort(403);
+                }
+                return $next($request);
+            }),
+        ];
     }
 
     public function index()

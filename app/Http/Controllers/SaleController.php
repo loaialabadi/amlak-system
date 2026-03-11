@@ -58,27 +58,36 @@ class SaleController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        $this->authorizeEditor();
+public function store(Request $request)
+{
+    $this->authorizeEditor();
 
-        $data = $this->validateSale($request);
-        $data['created_by'] = Auth::id();
+    $data = $this->validateSale($request);
+    $data['created_by'] = Auth::id();
 
-        // Handle scan upload
-        if ($request->hasFile('scan')) {
-            $file = $request->file('scan');
-            $path = $file->store('scans', 'public');
-            $data['scan_path']          = $path;
-            $data['scan_original_name'] = $file->getClientOriginalName();
-        }
+    // --- الحل هنا: تحويل القيم الفارغة إلى أصفار لتجنب خطأ SQL ---
+    $data['area_feddan'] = $data['area_feddan'] ?? 0;
+    $data['area_qirat']  = $data['area_qirat']  ?? 0;
+    $data['area_sahm']   = $data['area_sahm']   ?? 0;
+    $data['area_sqm']    = $data['area_sqm']    ?? 0;
+    
+    // تطبيع الاسم للبحث (اختياري كما في الـ Migration)
+    $data['buyer_name_normalized'] = str_replace(['أ', 'إ', 'آ'], 'ا', $data['buyer_name']);
 
-        $sale = Sale::create($data);
-
-        return redirect()
-            ->route('sales.show', $sale)
-            ->with('success', 'تم إضافة سجل البيعة بنجاح.');
+    // Handle scan upload
+    if ($request->hasFile('scan')) {
+        $file = $request->file('scan');
+        $path = $file->store('scans', 'public');
+        $data['scan_path']          = $path;
+        $data['scan_original_name'] = $file->getClientOriginalName();
     }
+
+    $sale = Sale::create($data);
+
+    return redirect()
+        ->route('sales.show', $sale)
+        ->with('success', 'تم إضافة سجل البيعة بنجاح.');
+}
 
     // ─── Show ────────────────────────────────────────────────────────────────────
 

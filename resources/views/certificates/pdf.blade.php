@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <title>إفادة رقم {{ $certificate->certificate_number }}</title>
-    <style>
-        @font-face {
-            font-family: 'DejaVu Sans';
-            src: url('{{ storage_path("fonts/DejaVuSans.ttf") }}') format('truetype');
-        }
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-        * {
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            margin: 0; padding: 0;
-            box-sizing: border-box;
-        }
+<title>إفادة رقم {{ $certificate->certificate_number }}</title>
 
-        body {
-            direction: rtl;
-            background: #fff;
-            color: #111;
-            font-size: 13pt;
-            line-height: 2;
-        }
+<style>
+
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("{{ storage_path('fonts/DejaVuSans.ttf') }}") format("truetype");
+}
+
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: "DejaVu Sans", sans-serif;
+    background: #fff;
+    color: #111;
+    font-size: 13pt;
+    line-height: 2;
+}
 
         /* ── Page layout ── */
         .page {

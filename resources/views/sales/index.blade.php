@@ -20,12 +20,12 @@
             <div class="col-md-2">
                 <label class="form-label text-white mb-1" style="font-size:.85rem;">المركز</label>
                 <input type="text" name="markaz" class="form-control"
-                       value="{{ $filters['markaz'] ?? '' }}" placeholder="مثال: قنا">
+                       value="{{ $filters['markaz'] ?? '' }}" placeholder="مثال: دشنا">
             </div>
             <div class="col-md-2">
                 <label class="form-label text-white mb-1" style="font-size:.85rem;">الناحية / القرية</label>
                 <input type="text" name="village" class="form-control"
-                       value="{{ $filters['village'] ?? '' }}" placeholder="مثال: الكرنك">
+                       value="{{ $filters['village'] ?? '' }}" placeholder="مثال: المحروسه">
             </div>
             <div class="col-md-2">
                 <label class="form-label text-white mb-1" style="font-size:.85rem;">نوع البيعة</label>
@@ -117,13 +117,17 @@
                                 {{ $sale->status_label }}
                             </span>
                         </td>
-                        <td>
-                            @if($sale->scan_path)
-                                <i class="bi bi-image-fill" style="color:#059669" title="يوجد صورة"></i>
-                            @else
-                                <i class="bi bi-image" style="color:#cbd5e1" title="لا توجد صورة"></i>
-                            @endif
-                        </td>
+<td>
+    @if($sale->scan_path)
+        <a href="{{ asset('storage/' . $sale->scan_path) }}" target="_blank">
+            <img src="{{ asset('storage/' . $sale->scan_path) }}" 
+                 alt="Scan" 
+                 style="max-width:50px; max-height:50px; border-radius:4px;">
+        </a>
+    @else
+        <i class="bi bi-image" style="color:#cbd5e1" title="لا توجد صورة"></i>
+    @endif
+</td>
                         <td onclick="event.stopPropagation()" class="text-nowrap">
                             <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-outline-primary me-1" title="عرض">
                                 <i class="bi bi-eye"></i>

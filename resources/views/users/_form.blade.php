@@ -8,7 +8,14 @@
     <input type="email" name="email" class="form-control" value="{{ old('email', $user->email ?? '') }}" required>
 </div>
 <div class="mb-3">
-    <label class="form-label fw-bold">كلمة المرور {{ $user ? '<small class="text-muted fw-normal">(اتركها فارغة للإبقاء على الحالية)</small>' : '<span class="text-danger">*</span>' }}</label>
+    <label class="form-label fw-bold"<label class="form-label fw-bold">
+    كلمة المرور
+    @if($user)
+        <small class="text-muted fw-normal">(اتركها فارغة للإبقاء على الحالية)</small>
+    @else
+        <span class="text-danger">*</span>
+    @endif
+</label>
     <input type="password" name="password" class="form-control" {{ $user ? '' : 'required' }} minlength="8">
 </div>
 <div class="mb-3">

@@ -12,8 +12,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ── Admin user ──
-        $admin = User::create([
+
+
+                $admin = User::create([
             'name'      => 'مدير النظام',
             'email'     => 'admin@amlaak.gov.eg',
             'password'  => Hash::make('Admin@1234'),
@@ -21,14 +22,23 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
         ]);
 
+    Sale::factory()->count(500)->create();
+
+
+
+        
+        // ── Admin user ──
+
         // ── Editor user ──
-        User::create([
-            'name'      => 'موظف التسجيل',
-            'email'     => 'editor@amlaak.gov.eg',
-            'password'  => Hash::make('Editor@1234'),
-            'role'      => 'editor',
-            'is_active' => true,
-        ]);
+User::updateOrCreate(
+    ['email' => 'admin@amlaak.gov.eg'],
+    [
+        'name' => 'مدير النظام',
+        'password' => bcrypt('12345678'),
+        'role' => 'admin',
+        'is_active' => 1
+    ]
+);
 
         // ── Sample sales ──
         $samples = [

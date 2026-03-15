@@ -54,7 +54,7 @@
         <label class="form-label fw-600">الناحية / القرية <span class="text-danger">*</span></label>
         <input type="text" name="village" class="form-control @error('village') is-invalid @enderror"
                value="{{ old('village', $sale->village ?? '') }}"
-               placeholder="مثال: الكرنك" required maxlength="100">
+               placeholder="مثال: الطويرات" required maxlength="100">
         @error('village')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 

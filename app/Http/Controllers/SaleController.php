@@ -65,30 +65,40 @@ public function store(Request $request)
     $data = $this->validateSale($request);
     $data['created_by'] = Auth::id();
 
-    // --- الحل هنا: تحويل القيم الفارغة إلى أصفار لتجنب خطأ SQL ---
+    // تحويل القيم الفارغة
     $data['area_feddan'] = $data['area_feddan'] ?? 0;
     $data['area_qirat']  = $data['area_qirat']  ?? 0;
     $data['area_sahm']   = $data['area_sahm']   ?? 0;
     $data['area_sqm']    = $data['area_sqm']    ?? 0;
-    
-    // تطبيع الاسم للبحث (اختياري كما في الـ Migration)
+
+    // تطبيع الاسم
     $data['buyer_name_normalized'] = str_replace(['أ', 'إ', 'آ'], 'ا', $data['buyer_name']);
 
-    // Handle scan upload
-    if ($request->hasFile('scan')) {
-        $file = $request->file('scan');
-        $path = $file->store('scans', 'public');
-        $data['scan_path']          = $path;
-        $data['scan_original_name'] = $file->getClientOriginalName();
-    }
-
+    // إنشاء السجل أولاً للحصول على ID
     $sale = Sale::create($data);
+
+    // رفع ملف الاسكان
+if ($request->hasFile('scan')) {
+
+    $file = $request->file('scan');
+
+    // تنظيف الاسم مع دعم الحروف العربية
+    $buyerName = preg_replace('/[^A-Za-z0-9\x{0600}-\x{06FF}]/u', '_', $sale->buyer_name);
+
+    $folder = 'scans/' . $buyerName . '_' . $sale->id;
+
+    $path = $file->store($folder, 'public');
+
+    $sale->update([
+        'scan_path' => $path,
+        'scan_original_name' => $file->getClientOriginalName(),
+    ]);
+}
 
     return redirect()
         ->route('sales.show', $sale)
         ->with('success', 'تم إضافة سجل البيعة بنجاح.');
 }
-
     // ─── Show ────────────────────────────────────────────────────────────────────
 
     public function show(Sale $sale)

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - نظام أملاك الدولة</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.rtl.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/icons/bootstrap-icons.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
     <style>
         * { font-family: 'Cairo', sans-serif; }
         body {

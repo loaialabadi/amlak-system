@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'نظام أملاك الدولة')</title>
-
+<!-- 
     {{-- Bootstrap RTL --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     {{-- Google Fonts Arabic --}}
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"> -->
+
+
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.rtl.min.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/icons/bootstrap-icons.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
     <style>
         :root {
@@ -187,6 +192,11 @@
         <div style="font-size:2.5rem;">🏛️</div>
         <h6>نظام أملاك الدولة<br><small style="color:rgba(255,255,255,.5);font-weight:400;">إدارة سجلات البيوع</small></h6>
     </div>
+
+    <i class="bi bi-person"></i>
+<i class="bi bi-house"></i>
+<i class="bi bi-printer"></i>
+
 
     <div class="sidebar-nav">
         <div class="nav-section-label">الرئيسية</div>

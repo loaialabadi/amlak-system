@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('applicant_name', 200)->nullable()->comment('اسم مقدم الطلب');
             $table->string('purpose', 500)->nullable()->comment('الغرض من الإفادة');
             $table->text('certificate_text')->comment('نص الإفادة');
+            $table->string('recipient')->nullable();
             $table->timestamp('issued_at')->useCurrent();
             
             // عمود افتراضي لحفظ التاريخ فقط

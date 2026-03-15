@@ -5,7 +5,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 <title>إفادة رقم {{ $certificate->certificate_number }}</title>
-
 <style>
 
 @font-face {
@@ -13,181 +12,175 @@
     src: url("{{ storage_path('fonts/DejaVuSans.ttf') }}") format("truetype");
 }
 
-body {
+/* إعداد صفحة الطباعة */
+@page {
+    size: A4;
+    margin: 18mm 20mm;
+}
+
+body{
     direction: rtl;
     text-align: right;
     font-family: "DejaVu Sans", sans-serif;
-    background: #fff;
-    color: #111;
-    font-size: 13pt;
-    line-height: 2;
+    background:#fff;
+    color:#111;
+    font-size:13pt;
+    line-height:1.9;
+    margin:0;
 }
 
-        /* ── Page layout ── */
-        .page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm 22mm;
-            display: flex;
-            flex-direction: column;
-        }
+/* الصفحة */
+.page{
+    width:100%;
+    max-width:210mm;
+    margin:auto;
+}
 
-        /* ── Header ── */
-        .header {
-            text-align: center;
-            border-bottom: 3px double #1a3a5c;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
+/* Header */
 
-        .header .gov-title {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #1a3a5c;
-            letter-spacing: 1px;
-        }
+.header{
+    text-align:center;
+    border-bottom:3px double #1a3a5c;
+    padding-bottom:10px;
+    margin-bottom:15px;
+}
 
-        .header .dept-title {
-            font-size: 12pt;
-            color: #374151;
-            margin-top: 3px;
-        }
+.gov-title{
+    font-size:14pt;
+    font-weight:bold;
+    color:#1a3a5c;
+}
 
-        .header .sub-title {
-            font-size: 11pt;
-            color: #64748b;
-            margin-top: 2px;
-        }
+.sub-title{
+    font-size:11pt;
+    color:#475569;
+}
 
-        /* ── Certificate title ── */
-        .cert-title-box {
-            border: 2px solid #1a3a5c;
-            border-radius: 4px;
-            text-align: center;
-            padding: 8px;
-            margin: 20px auto;
-            width: 200px;
-            background: #f0f4f8;
-        }
+/* عنوان الافادة */
 
-        .cert-title-box h2 {
-            font-size: 16pt;
-            font-weight: bold;
-            color: #1a3a5c;
-            margin: 0;
-        }
+.cert-title-box{
+    border:2px solid #1a3a5c;
+    text-align:center;
+    padding:6px;
+    margin:15px auto;
+    width:180px;
+    background:#f1f5f9;
+}
 
-        /* ── Cert number & date row ── */
-        .cert-meta {
-            display: table;
-            width: 100%;
-            margin-bottom: 18px;
-            font-size: 11pt;
-        }
+.cert-title-box h2{
+    margin:0;
+    font-size:15pt;
+    color:#1a3a5c;
+}
 
-        .cert-meta .left,
-        .cert-meta .right {
-            display: table-cell;
-            width: 50%;
-            padding: 4px 0;
-        }
+/* بيانات الإفادة */
 
-        .cert-meta .right { text-align: right; }
-        .cert-meta .left  { text-align: left; }
+.cert-meta{
+    width:100%;
+    font-size:11pt;
+    margin-bottom:15px;
+}
 
-        .cert-meta span {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 2px 10px;
-            border-radius: 4px;
-            font-size: 11pt;
-        }
+.cert-meta table{
+    width:100%;
+}
 
-        /* ── Divider ── */
-        .divider {
-            border: none;
-            border-top: 1px solid #e2e8f0;
-            margin: 15px 0;
-        }
+.cert-meta td{
+    padding:4px 0;
+}
 
-        /* ── Body text ── */
-        .body-text {
-            font-size: 13pt;
-            line-height: 2.4;
-            text-align: justify;
-            color: #111;
-            padding: 0 5px;
-        }
+.meta-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:2px 8px;
+}
 
-        /* ── Status highlight ── */
-        .status-paid    { color: #065f46; font-weight: bold; }
-        .status-unpaid  { color: #991b1b; font-weight: bold; }
-        .status-unknown { color: #92400e; font-weight: bold; }
+/* divider */
 
-        /* ── Footer section ── */
-        .footer-section {
-            margin-top: 40px;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
-        }
+.divider{
+    border:none;
+    border-top:1px solid #e2e8f0;
+    margin:12px 0;
+}
 
-        .sig-block {
-            display: table;
-            width: 100%;
-            margin-top: 50px;
-        }
+/* مقدم الطلب */
 
-        .sig-cell {
-            display: table-cell;
-            width: 50%;
-            text-align: center;
-            font-size: 11pt;
-            color: #374151;
-        }
+.applicant-box{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    padding:8px 12px;
+    margin-bottom:15px;
+    font-size:11pt;
+}
 
-        .sig-line {
-            border-bottom: 1px solid #374151;
-            width: 160px;
-            margin: 60px auto 5px;
-        }
+/* النص */
 
-        /* ── Watermark ── */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 70pt;
-            color: rgba(26,58,92,.04);
-            white-space: nowrap;
-            font-weight: bold;
-            z-index: -1;
-        }
+.body-text{
+    font-size:13pt;
+    line-height:2.2;
+    text-align:justify;
+}
 
-        /* ── Footer stamp bar ── */
-        .stamp-bar {
-            position: fixed;
-            bottom: 15mm;
-            left: 22mm;
-            right: 22mm;
-            border-top: 2px solid #1a3a5c;
-            padding-top: 6px;
-            font-size: 9pt;
-            color: #64748b;
-            display: flex;
-            justify-content: space-between;
-        }
+.body-text p{
+    text-indent:35px;
+    margin:8px 0;
+}
 
-        /* ── Applicant box ── */
-        .applicant-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            font-size: 11pt;
-        }
-    </style>
+/* التوقيعات */
+
+.sig-block{
+    width:100%;
+    margin-top:40px;
+}
+
+.sig-block table{
+    width:100%;
+    text-align:center;
+}
+
+.sig-line{
+    border-bottom:1px solid #000;
+    width:150px;
+    margin:45px auto 5px;
+}
+
+/* العلامة المائية */
+
+.watermark{
+    position:fixed;
+    top:45%;
+    left:50%;
+    transform:translate(-50%,-50%) rotate(-30deg);
+    font-size:70pt;
+    color:rgba(0,0,0,0.05);
+    z-index:-1;
+}
+
+/* الفوتر */
+
+.stamp-bar{
+    position:fixed;
+    bottom:10mm;
+    left:20mm;
+    right:20mm;
+    border-top:1px solid #1a3a5c;
+    padding-top:4px;
+    font-size:9pt;
+    color:#64748b;
+}
+
+.stamp-bar table{
+    width:100%;
+}
+
+.ref{
+    text-align:center;
+    margin-top:20px;
+    font-size:10pt;
+    color:#94a3b8;
+}
+
+</style>
 </head>
 <body>
 
@@ -197,8 +190,7 @@ body {
 
     {{-- ── Header ── --}}
     <div class="header">
-        <div class="gov-title">جمهورية مصر العربية</div>
-        <div class="dept-title">وزارة المالية &mdash; مصلحة الأملاك الأميرية</div>
+        <div class="gov-title">محافظه قنا  </div>
         <div class="sub-title">إدارة أملاك الدولة</div>
     </div>
 
@@ -216,6 +208,8 @@ body {
             التاريخ: <span>{{ $certificate->issued_at->format('Y/m/d') }}</span>
         </div>
     </div>
+
+<p><strong>إلى:</strong> {{ $certificate->recipient == 'local_unit' ? "السيد المهندس/ رئيس الوحدة المحلية لمركز ومدينة {$certificate->sale->markaz}" : ($certificate->recipient == 'agric_bank' ? "السيد الأستاذ/ مدير عام البنك الزراعي المصري فرع {$certificate->sale->village}" : "السيد المهندس/ وكيل الزراعة - مدير مديرية الزراعة بقنا") }}</p>
 
     <hr class="divider">
 
@@ -242,23 +236,40 @@ body {
         <p style="text-indent:40px; margin-top:10px">
             وقد صدرت هذه الإفادة بناءً على الطلب المقدم وذلك للاستفادة منها فيما يُرام.
         </p>
+
+                <p style="text-indent:40px; margin-top:10px">
+      وتفضلوا بقبول فائق الاحترام
+        </p>
     </div>
 
     <hr class="divider" style="margin-top:30px">
 
     {{-- ── Signature ── --}}
-    <div class="sig-block">
-        <div class="sig-cell">
-            <div>مأمور التسجيل</div>
-            <div class="sig-line"></div>
-            <div>{{ $certificate->issuedBy->name }}</div>
-        </div>
-        <div class="sig-cell">
-            <div>رئيس قسم أملاك الدولة</div>
-            <div class="sig-line"></div>
-            <div>التوقيع والختم الرسمي</div>
-        </div>
-    </div>
+<div class="sig-block">
+<table>
+<tr>
+
+<td>
+<div>المختص</div>
+<div class="sig-line"></div>
+<div>{{ $certificate->issuedBy->name }}</div>
+</td>
+
+<td>
+<div>رئيس القسم</div>
+<div class="sig-line"></div>
+</td>
+
+<td>
+<div>مدير إدارة أملاك قنا</div>
+<div class="sig-line"></div>
+<div>التوقيع والختم الرسمي</div>
+<div>م/محمد احمد عبدالحميد</div>
+</td>
+
+</tr>
+</table>
+</div>
 
     {{-- ── Ref ── --}}
     <div style="text-align:center;margin-top:25px;font-size:10pt;color:#94a3b8">

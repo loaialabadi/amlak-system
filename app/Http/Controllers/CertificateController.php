@@ -38,10 +38,12 @@ class CertificateController extends Controller
             'applicant_name'   => $request->applicant_name,
             'purpose'          => $request->purpose,
             'certificate_text' => $request->certificate_text,
+                'recipient'        => $request->recipient, // <-- هنا
+
             'issued_at'        => now(),
         ]);
 
-        return $this->generatePdf($certificate);
+        return $this->generateCertificateView($certificate);
     }
 
     /**
@@ -49,7 +51,7 @@ class CertificateController extends Controller
      */
     public function show(Certificate $certificate)
     {
-        return $this->generatePdf($certificate);
+        return $this->generateCertificateView($certificate);
     }
 
     /**
@@ -58,51 +60,47 @@ class CertificateController extends Controller
 
 // امسح سطر use ArPHP\I18N\Arabic; 
 
-private function generatePdf(Certificate $certificate): \Illuminate\Http\Response
+private function generateCertificateView(Certificate $certificate)
 {
+    // تحميل العلاقات
     $certificate->load('sale', 'issuedBy');
 
-    // معالجة النصوص العربية
+    // معالجة النصوص العربية إذا كانت مكتبة ArPHP موجودة
     if (class_exists(\ArPHP\I18N\Arabic::class)) {
-
         $arabic = new \ArPHP\I18N\Arabic();
 
-        // معالجة النص الأساسي
         if (!empty($certificate->certificate_text)) {
             $certificate->certificate_text = $arabic->utf8Glyphs($certificate->certificate_text);
         }
 
-        // معالجة بيانات البيع
         if ($certificate->sale) {
-
-            if (!empty($certificate->sale->buyer_name)) {
-                $certificate->sale->buyer_name = $arabic->utf8Glyphs($certificate->sale->buyer_name);
-            }
-
-            if (!empty($certificate->sale->village)) {
-                $certificate->sale->village = $arabic->utf8Glyphs($certificate->sale->village);
-            }
-
-            if (!empty($certificate->sale->markaz)) {
-                $certificate->sale->markaz = $arabic->utf8Glyphs($certificate->sale->markaz);
-            }
+            $certificate->sale->buyer_name = $arabic->utf8Glyphs($certificate->sale->buyer_name ?? '');
+            $certificate->sale->village    = $arabic->utf8Glyphs($certificate->sale->village ?? '');
+            $certificate->sale->markaz     = $arabic->utf8Glyphs($certificate->sale->markaz ?? '');
         }
     }
 
-    // إنشاء الـ PDF
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('certificates.pdf', [
-        'certificate' => $certificate
+    // نص الجهة حسب اختيار المستخدم عند الإنشاء
+    $recipientText = '';
+    switch ($certificate->recipient ?? '') {
+        case 'local_unit':
+            $recipientText = "السيد المهندس/ رئيس الوحدة المحلية لمركز ومدينة " . ($certificate->sale->markaz ?? '');
+            break;
+        case 'agric_bank':
+            $recipientText = "السيد الأستاذ/ مدير عام البنك الزراعي المصري فرع " . ($certificate->sale->village ?? '');
+            break;
+        case 'agriculture':
+            $recipientText = "السيد المهندس/ وكيل الزراعة - مدير مديرية الزراعة بقنا";
+            break;
+        default:
+            $recipientText = "جهة غير محددة";
+    }
+
+    // عرض الإفادة مباشرة على صفحة ويب
+    return view('certificates.pdf', [
+        'certificate' => $certificate,
+        'recipientText' => $recipientText,
     ]);
-
-    $pdf->setPaper('A4', 'portrait');
-
-    $pdf->setOptions([
-        'defaultFont' => 'DejaVu Sans',
-        'isHtml5ParserEnabled' => true,
-        'isRemoteEnabled' => true
-    ]);
-
-    return $pdf->stream('ifada-' . $certificate->certificate_number . '.pdf');
 }
 
 
